@@ -1,6 +1,6 @@
 import { BookI } from '../../shared/interfaces/book.interface'
 
-let bookStore: BookI[] = []
+let bookMap = new Map<string, BookI> ();
 
 class BookRepository {
 
@@ -8,17 +8,46 @@ class BookRepository {
 
     create (book: BookI):BookI {
         let payload:BookI = book;
-        bookStore.push(payload)
+        bookMap.set(book.id, payload);
         return payload
     };
 
     getAllBooks ():BookI[] {
-        return bookStore;
+        let book:BookI[] = [];
+
+        for (let value of bookMap.values()) {
+            book.push(value);                 
+                    
+        };
+
+        return book;
     }
 
     getBookById(id: string): any {
-       return bookStore.find((book:BookI) => book.id === id);
+       return bookMap.get(id);
     }
+
+    updateBookById(book: BookI) {
+        let foundBook = bookMap.get(book.id);
+
+        if (foundBook) {
+            bookMap.set(book.id, book);
+            return foundBook;
+        }
+
+        return null;
+        
+     }
+
+     deleteBookById(id: string) : boolean {
+        if (!bookMap.get(id)) {
+             return false;
+        }
+
+        bookMap.delete(id);
+
+        return true;
+     }
 
 }
 
