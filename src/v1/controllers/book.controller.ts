@@ -4,23 +4,23 @@ import BookRepository from '../repositories/book.repository';
 
 const bookController = {
 
-    create: (req:Request, res:Response) =>{
+    create: async (req:Request, res:Response) =>{
         let payload = req.body;
         let createBook = new BookRepository();
-        let result = createBook.create(payload)
+        let result = await createBook.create(payload)
         return res.status(200).json(result)
     },
 
-    getAllBooks: (req:Request, res:Response) =>{
+    getAllBooks: async (req:Request, res:Response) =>{
         let getBooks = new BookRepository();
-        return res.status(200).json(getBooks.getAllBooks()) 
+        return res.status(200).json(await getBooks.getAllBooks()) 
     },
     
-    getBookById: (req:Request, res:Response) => {
+    getBookById: async (req:Request, res:Response) => {
         let id = req.params.id;
         let book:BookRepository = new BookRepository();
 
-        let result: BookI = book.getBookById(id)
+        let result: BookI = await book.getBookById(Number(id))
 
         return res.status(200).json(result)
     }

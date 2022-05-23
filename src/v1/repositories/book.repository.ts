@@ -1,25 +1,32 @@
 import { BookI } from '../../shared/interfaces/book.interface'
-
-let bookStore: BookI[] = []
+import { BookEntity }  from '../../shared/entity'
 
 class BookRepository {
 
     constructor() {}
 
-    create (book: BookI):BookI {
+   async create (book: BookI):Promise<BookI> {
         let payload:BookI = book;
-        bookStore.push(payload)
-        return payload
+        const newBook = new BookEntity()
+        const { name, description, author, isbn } = payload
+            newBook.name = name
+            newBook.description = description
+            newBook.author = author
+            newBook.isbn = isbn
+            await newBook.save()
+            
+        return newBook;
     };
 
-    getAllBooks ():BookI[] {
-        return bookStore;
+   async getAllBooks ():Promise<BookI[]> {
+       return await BookEntity.find()
     }
 
-    getBookById(id: string): any {
-       return bookStore.find((book:BookI) => book.id === id);
+    async getBookById(id: number):Promise<BookI> {{
+        return await BookEntity.findOneBy({id: id})
     }
 
+}
 }
 
 export default BookRepository;
