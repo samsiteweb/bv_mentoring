@@ -1,61 +1,60 @@
 import { Response, Request } from 'express';
-import { BookI } from '../../shared/interfaces/book.interface'
-import BookRepository from '../repositories/book.repository';
+import { BaseResponse, IdDTO } from '../interfaces/base.interface';
+import { updateBookDTO } from '../interfaces/book.interface';
+import { BookService } from '../services/bookService';
+import { BaseController } from './base.controller';
 
 const bookController = {
 
-    create: (req:Request, res:Response) =>{
+    create: async (req:Request, res:Response) =>{
         let payload = req.body;
-        let createBook = new BookRepository();
-        let result = createBook.create(payload);
-        return res.status(200).json(result);
+        let result : BaseResponse = await new BookService().createBook(payload);
+        return new BaseController().getResponse(res, result)
     },
 
-    getAllBooks: (req:Request, res:Response) =>{
-        let getBooks = new BookRepository();
-        return res.status(200).json(getBooks.getAllBooks()) 
-    },
-    
-    getBookById: (req:Request, res:Response) => {
-        let id = req.params.id;
-        let book:BookRepository = new BookRepository();
-
-        let result: BookI = book.getBookById(id);
-        if (!result) {
-            return res.status(400).json("book not found");
-        }
-
-        return res.status(200).json(result);
+    getBookById: async (req:Request, res:Response) => {
+        let id : number = Number(req.params.id);
+        let result : BaseResponse = await new BookService().getBookById(id);
+        console.log(result.data)
+        return new BaseController().getResponse(res, result)
     },
 
-    updateBookById: (req:Request, res:Response) => {
-        let id = req.params.id;
-        let payload : BookI = req.body;
-        payload.id = id;
-
-        let book:BookRepository = new BookRepository();
-
-        let result: BookI | null = book.updateBookById(payload)
-
-        if (result) {
-            return res.status(200).json(result);
-        }
-
-        return res.status(400).json("Book not found");
+    getAllBooks: async (req:Request, res:Response) =>{
+        let result : BaseResponse = await new BookService().getAllBook();
+        return new BaseController().getResponse(res, result) 
     },
 
-    deleteBookById: (req:Request, res:Response) => {
-        let id = req.params.id;
+    getBookByAuthorId: async (req:Request, res:Response) => {
+        let id : number = Number(req.params.id);
+        let result : BaseResponse = await new BookService().getBookByAuthorId(id);
+        return new BaseController().getResponse(res, result)
+    },
 
-        let book:BookRepository = new BookRepository();
+    updateBookById: async (req:Request, res:Response) => {
+        let payload : updateBookDTO = req.body;
+        let id : number = Number(req.params.id);
+        let result : BaseResponse = await new BookService().updateBook(id, payload);
+        return new BaseController().getResponse(res, result)
+    },
 
-        let result: boolean = book.deleteBookById(id);
+    addAuthorToBook: async (req:Request, res:Response) => {
+        let payload : IdDTO = req.body;
+        let id : number = Number(req.params.id);
+        let result : BaseResponse = await new BookService().addAuthorToBook(id, payload.id);
+        return new BaseController().getResponse(res, result)
+    },
 
-        if (result) {
-            return res.status(200).json("Book deleted successfully");
-        }
+    removeAuthorToBook: async (req:Request, res:Response) => {
+        let payload : IdDTO = req.body;
+        let id : number = Number(req.params.id);
+        let result : BaseResponse = await new BookService().removeAuthorToBook(id, payload.id);
+        return new BaseController().getResponse(res, result)
+    },
 
-        return res.status(400).json("Book not found");
+    deleteBookById: async (req:Request, res:Response) => {
+        let id : number = Number(req.params.id);
+        let result : BaseResponse = await new BookService().deleteBook(id);
+        return new BaseController().getResponse(res, result)
     }
 
 }
