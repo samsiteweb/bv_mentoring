@@ -4,11 +4,14 @@ import  bookController from '../controllers/book.controller'
 
 const bookRoutes = Router()
 
-bookRoutes.post('/book/addBook', bookController.create)
-bookRoutes.get('/book/getById/:id', bookController.getBookById)
-bookRoutes.put('/book/:id', bookController.updateBookById)
-bookRoutes.delete('/book/:id', bookController.deleteBookById)
-bookRoutes.get('/book/all', bookController.getAllBooks)
+bookRoutes.post('/', bookController.create)
+bookRoutes.get('/:id', bookController.getBookById)
+bookRoutes.put('/:id', bookController.updateBookById)
+bookRoutes.delete('/:id', bookController.deleteBookById)
+bookRoutes.get('/', bookController.getAllBooks)
+bookRoutes.get('/author/:id', bookController.getBookByAuthorId)
+bookRoutes.patch('/:id/author/remove', bookController.removeAuthorToBook)
+bookRoutes.patch('/:id/author/add', bookController.addAuthorToBook)
 
 
 export default bookRoutes;
